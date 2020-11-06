@@ -1,41 +1,45 @@
-#!/usr/bin/env python3
+from sys import argv
 
-# this is a python script template
-# this next line will download the file using curl
+if len(argv) != 3:
+	print("Run with 2 arguments: input_GFF.gff3 output_FASTA.fasta")
+	exit(0)
+else:
+	pass
 
-gff="Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.37.gff3.gz"
-fasta="Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.dna.chromosome.Chromosome.fa.gz"
+script, input_gff, input_fasta = argv
 
-import os,gzip,itertools,csv,re
+gff_file = open(input_gff)
+fasta_file = open(input_fasta)
 
-# this is code which will parse FASTA files
-# define what a header looks like in FASTA format
-def isheader(line):
-    return line[0] == '>'
+gene_count = 0
+gene_length_total = 0
 
-def aspairs(f):
-    seq_id = ''
-    sequence = ''
-    for header,group in itertools.groupby(f, isheader):
-        if header:
-            line = next(group)
-            seq_id = line[1:].split()[0]
-        else:
-            sequence = ''.join(line.strip() for line in group)
-            yield seq_id, sequence
+# Go through lines in GFF.
+for line in gff_file:
+	if "#" in line:
+		continue
 
-
-
-if not os.path.exists(gff):
-    os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/gff3/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.37.gff3.gz")
-
-if not os.path.exists(fasta):
-    os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/dna/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.dna.chromosome.Chromosome.fa.gz")
-    
-with gzip.open(gff,"rt") as fh:
-    # now add code to process this
-    gff = csv.reader(fh,delimiter="\t")
-    for row in gff:
-        if row[0].startswith("#"):
-            continue
-        print(row[3],row[6])
+	current_line = line.split('\t')
+	if gene in current_line[2]:
+		gene_count += 1
+		start = current_line[3]
+		end = current_line[4]
+		gene_length = end - start
+		gene_length_total += gene_length
+	
+	
+		
+line_length_total = 0	
+	
+for line in fasta_file:
+	if ">" in line:
+		continue
+		
+	line_length = len(line)
+	line_length_total += line_length
+	
+print(f"The total length of the genome is {line_length_total}.")
+print(f"The number of genes is {gene_count}.")
+print(f"The total gene length is {gene_length_total}.")
+print (f"The percentage of the genome which is coding is {gene_length_total}/{line_length_total}.")
+		
