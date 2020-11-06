@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+# Prints a row of numbers from 0-99, excluding those divisible by 7
 
-start = 0
-end   = 99
-divisor=7
-print("Printing out numbers from",start,"to",end, " not divisible by",divisor)
+for x in range(0,100):
+    if x % 7 != 0:
+        print (x);
+    else:
+        pass
