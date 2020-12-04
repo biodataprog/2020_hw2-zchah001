@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# Prints a row of numbers from 0-99, excluding those divisible by 7
+#used to print out numbers between 0 and 99 indivisible by 7
 
-for x in range(0,100):
-    if x % 7 != 0:
-        print (x);
-    else:
-        pass
+A = list(range(100))
+for B in A:
+    if B == 0 or n%7 > 0:
+print(B)
