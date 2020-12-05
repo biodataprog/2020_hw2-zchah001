@@ -1,7 +1,12 @@
+#Print out values from 0 to 99 except those  perfectly divisible by 7
 #!/usr/bin/env python3
-#used to print out numbers between 0 and 99 indivisible by 7
 
-A = list(range(100))
-for B in A:
-    if B == 0 or n%7 > 0:
-print(B)
+Start = 0
+End   = 99
+divisor=7
+print("Print out  numbers from",Start,"to",End, " not divisible by",divisor)
+for Sevenless  in range(0, 99):
+     if Sevenless  % 7 != 0:
+                print(Sevenless)
+done
+
