@@ -1,5 +1,5 @@
-#Print out values from 0 to 99 except those  perfectly divisible by 7
 #!/usr/bin/env python3
+#Print out values from 0 to 99 except those  perfectly divisible by 7
 
 Start = 0
 End   = 99
