@@ -25,11 +25,11 @@ def aspairs(f):
             yield seq_id, sequence
 
 if not os.path.exists(gff):
-        os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/gff3/bacteria_0_collection/escherichia_coli_str_k_12_s$
+        os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/gff3/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/Escherichia_coli_str_k_12_substr_$
 
 
 if not os.path.exists(fasta):
-        os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/escherichia_coli_str_k_12_$
+        os.system("curl -O ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/dna/Escherichia_coli_str_k_12_su$
 
 
 # Process gff to get gene count, total gene length and coding length
@@ -60,7 +60,6 @@ with gzip.open(fasta, "rt") as fh:
      pairs = aspairs(fh)
      seqs = dict(pairs)
      Total_Genome_Length = len(seqs['Chromosome'])
-
 # Print results
 
 print('Number of genes: {}'.format(Num_of_Genes))
@@ -68,6 +67,4 @@ print('Total length of the genes: {}'.format(Total_Gene_Length))
 print('Total length of genome: {}'.format(Total_Genome_Length))
 print('percentage of the genome which is coding: {:.2f}%'.format(100 * (Total_Exon_Length/ Total_Genome_Length)))
 
-done
-
-
+done                  
