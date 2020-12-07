@@ -1,35 +1,18 @@
 #!/usr/bin/env python3
 
-import os, gzip, itertools
-from collections import Counter
-# this is code which will parse FASTA files
-# define what a header looks like in FASTA format
-def isheader(line):
-    return line[0] == '>'
+#load packages
+import os,gzip,itertools,csv,re
+import sys
+import Bio
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqUtils import GC
 
-def aspairs(f):
-    seq_id = ''
-    sequence = ''
-    for header,group in itertools.groupby(f, isheader):
-        if header:
-            line = next(group)
-            seq_id = line[1:].split()[0]
-        else:
-            sequence = ''.join(line.strip() for line in group)
-            yield seq_id, sequence
-
-def returnSum(myDict):
-
-    sum = 0
-    for i in myDict:
-        sum = sum + myDict[i]
-
-    return sum
-url1="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2/cds/Salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2.ASM694v2.cds.all.fa.gz"
-url2="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/mycobacterium_tuberculosis_h37rv/cds/Mycobacterium_tuberculosis_h37rv.ASM19595v2.cds.all.fa.gz"
+#input data
+url1="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2/cds/Salmo$
+url2="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/mycobacterium_tuberculosis_h37rv/cds/Mycobacterium_tuberculosis_h37rv.AS$
 file1="Salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2.ASM694v2.cds.all.fa.gz"
 file2="Mycobacterium_tuberculosis_h37rv.ASM19595v2.cds.all.fa.gz"
-
 
 if not os.path.exists(file1):
     os.system("curl -O %s"%(url1))
@@ -37,90 +20,87 @@ if not os.path.exists(file1):
 if not os.path.exists(file2):
     os.system("curl -O %s"%(url2))
 
-n_gene1 = 0 #number of gene in file 1
-n_gene2 = 0 #number of gene in file 2
-L_gene1 = 0 #length of gene in file 1
-L_gene2 = 0 #length of gene in file 2
-L_gene2 = 0 #length of gene in file 2
-G_number1 = 0
-C_number1 = 0
-G_number2 = 0
-C_number2 = 0
-
-codon1 = {}
-# creating a dictionary for codon.
-for first in {'A','T','C','G'}:
-    for second in {'A','T','C','G'}:
-        for third in {'A','T','C','G'}:
-            new_codon = first+second+third
-            new_dict = {new_codon:0}
-            codon1.update(new_dict)
-
-codon2 = {}
-# creating a dictionary for codon.
-for first in {'A','T','C','G'}:
-    for second in {'A','T','C','G'}:
-        for third in {'A','T','C','G'}:
-         new_codon = first+second+third
-         new__dict = {new_codon:0}
-         codon2.update(new_dict)
-
-codonF = {}
-# creating a dictionary for codon.
-for first in {'A','T','C','G'}:
-    for second in {'A','T','C','G'}:
-        for third in {'A','T','C','G'}:
-            new_codon = first+second+third
-            new_dict = {new_codon:0}
-            codonF.update(new_dict)
-
-with gzip.open(file1,"rt") as fh:
-    seqs1 = aspairs(fh)
-    for seq1 in seqs1:
-        seqname1  = seq1[0]
-        seqstring1= seq1[1]
-        n_gene1 = n_gene1 + 1
-        L_gene1 = L_gene1 + len(seqstring1)
-        base = Counter(seqstring1)
-		  L_gene1 = L_gene1 + len(seqstring1)
-        base = Counter(seqstring1)
-        G_species1 = G_number1 + base {'G'}]
-        C_species1 = C_number1 + base {'C'}
-        for i in range(0,len(seqstring1)-1,3):
-            if seqstring1[i:i+3] in codon1:
-                codon1[seqstring1[i:i+3]] += 1
-            else:
-                codon1[seqstring1[i:i+3]] = 1
-
-with gzip.open(file2,"rt") as fj:
-    seqs2 = aspairs(fj)
-    for seq2 in seqs2:
-        seqname2  = seq2[0]
-        seqstring2= seq2[1]
-        n_gene2 = n_gene2 + 1
-        L_gene2 = L_gene2 + len(seqstring2)
-        base = Counter(seqstring2)
-        G_species2 = G_number2 + base['G']
-        C_species2 = C_number2 + base['C']
-        for i in range(0,len(seqstring2)-1,3):
-            if seqstring2[i:i+3] in codon2:
-                codon2[seqstring2[i:i+3]] += 1
-            else:
-                codon2[seqstring2[i:i+3]] = 1
-       # print(seqname, " first 10 bases are ", seqstring[0:10])
-for key in codonF:
-    codonF[key] = str(round(codon1[key]/returnSum(codon1),4)) +  str(round(codon2[key]/returnSum(codon2),4))
-
-print("The number of genes in species 1 is:",n_gene1)
-print("The Length of genes in Species 1 is:",L_gene1)
-print("The number of genes in species 2 is:",n_gene2)
-print("The Length of genes in Species 2 is:",L_gene2)
-
-print("The G+C percentage of species 1 is:",(G_species1 + C_species1)/L_gene1)
-print("The G+C percentage of species 2 is:",(G_species2 + C_species2)/L_gene2)
-print("The G+C percentage of total dataset is:",(G_species2 + C_species2 + G_species1 + C_species1 )/(L_gene2 + L_gene1))
-print("The Codon numbers in file 1 are ",returnSum(codon1))
-print("The Codon numbers in file 2 are ",returnSum(codon2))
-print("The Codon frquency is", str(codonF))
+#1. The total number of genes in each species.
+count = 0
+with gzip.open(file1,"rt") as fasta_in:
+    for record in SeqIO.parse(fasta_in, "fasta"):
+        count += 1
+print("Salmonella enterica has ",count," genes")
 
 
+count2 = 0
+with gzip.open(file2,"rt") as fasta_in:
+    for record in SeqIO.parse(fasta_in, "fasta"):
+        count2 += 1
+print("Mycobacterium tuberculosis has ",count2," genes")
+
+
+#2. Total length of these gene sequences for each file
+Se_gene_lengths = []
+with gzip.open(file1,"rt") as fasta_inSe:
+    for sequence in SeqIO.parse(fasta_inSe, "fasta"):
+        Se_gene_lengths.append(len(sequence.seq))
+print("The total length of all genes in Salmonella enterica is",sum(Se_gene_lengths)," BP")
+
+Mt_gene_lengths = []
+with gzip.open(file2,"rt") as fasta_inMt:
+    for sequence in SeqIO.parse(fasta_inMt, "fasta"):
+        Mt_gene_lengths.append(len(sequence.seq))
+print("The total length of all genes in Mycobacterium tuberculosis is",sum(Mt_gene_lengths)," BP")
+
+
+#3. The G+C percentage for the whole dataset (eg the frequency of G + the frequency of C)
+Se_G_orC = ''
+with gzip.open(file1,"rt") as fasta_inSe:
+    for sequence in SeqIO.parse(fasta_inSe, "fasta"):
+        Se_G_orC += sequence.seq
+print("The total GC content of Salmonella enterica is",GC(Se_G_orC))
+Mt_G_orC = ''
+with gzip.open(file2,"rt") as fasta_inMt:
+    for sequence in SeqIO.parse(fasta_inMt, "fasta"):
+        Mt_G_orC += sequence.seq
+print("The total GC content of Mycobacterium tuberculosis is",GC(Mt_G_orC))
+
+
+print("The combined total GC of the dataset is ",GC(Se_G_orC + Mt_G_orC))
+
+
+#4. Total number codons in each genome.
+def split_str(str, codon_size):
+   return [str[i:i+codon_size] for i in range(0, len(str), codon_size)]
+
+Se_split_codons = ''
+with gzip.open(file1,"rt") as fasta_inSe:
+    for sequence in SeqIO.parse(fasta_inSe, "fasta"):
+        Se_split_codons += str(sequence.seq)
+listed_codons_Se = split_str(Se_split_codons, 3)
+print("The total number of codons in Salmonella enterica is ",len(listed_codons_Se))
+
+Mt_split_codons = ''
+with gzip.open(file2,"rt") as fasta_inMt:
+    for sequence in SeqIO.parse(fasta_inMt, "fasta"):
+Mt_split_codons += str(sequence.seq)
+listed_codons_Mt = split_str(Mt_split_codons, 3)
+print("The total number of codons in Mycobacterium tuberculosis is ",len(listed_codons_Mt))
+
+
+#get uninque values of listed_codons, a number of number in each category
+unique_codons_Se =list(set(listed_codons_Se))
+unique_codons_Mt =list(set(listed_codons_Mt))
+#print(unique_codons_Se)
+#print(len(unique_codons_Se))
+#print(unique_codons_Mt)
+#print(len(unique_codons_Se))
+
+codon_dictionary_Se ={}
+for k in unique_codons_Se:
+    codon_dictionary_Se[k] = listed_codons_Se.count(k)
+
+codon_dictionary_Mt ={}
+for k in unique_codons_Mt:
+    codon_dictionary_Mt[k] = listed_codons_Mt.count(k)	
+#5. Print out table with three columns: Codon, Frequency in Sp1, Frequency in Sp2
+print("Codon", "\t", "Frequency in Salmonella enterica", "\t", "Frequency in Mycobacterium tuberculosis")
+for k in codon_dictionary_Se:
+        print(k,"\t", codon_dictionary_Se[k], "\t",codon_dictionary_Mt[k] )
+done
