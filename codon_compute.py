@@ -9,8 +9,8 @@ from Bio.Seq import Seq
 from Bio.SeqUtils import GC
 
 #input data
-url1="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2/cds/Salmo$
-url2="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/mycobacterium_tuberculosis_h37rv/cds/Mycobacterium_tuberculosis_h37rv.AS$
+url1="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2/cds/Salmo$$/Salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2.ASM694v2.cds.all.fa.gz"
+url2="ftp://ftp.ensemblgenomes.org/pub/bacteria/release-45/fasta/bacteria_0_collection/mycobacterium_tuberculosis_h37rv/cds/Mycobacterium_tuberculosis_h37rv.AS$$7rv.ASM19595v2.cds.all.fa.gz"
 file1="Salmonella_enterica_subsp_enterica_serovar_typhimurium_str_lt2.ASM694v2.cds.all.fa.gz"
 file2="Mycobacterium_tuberculosis_h37rv.ASM19595v2.cds.all.fa.gz"
 
@@ -55,9 +55,11 @@ with gzip.open(file1,"rt") as fasta_inSe:
     for sequence in SeqIO.parse(fasta_inSe, "fasta"):
         Se_G_orC += sequence.seq
 print("The total GC content of Salmonella enterica is",GC(Se_G_orC))
+
+
 Mt_G_orC = ''
 with gzip.open(file2,"rt") as fasta_inMt:
-    for sequence in SeqIO.parse(fasta_inMt, "fasta"):
+    for sequence in SeqIO.parse(fasta_inMt, "fasta"):    
         Mt_G_orC += sequence.seq
 print("The total GC content of Mycobacterium tuberculosis is",GC(Mt_G_orC))
 
@@ -78,8 +80,7 @@ print("The total number of codons in Salmonella enterica is ",len(listed_codons_
 
 Mt_split_codons = ''
 with gzip.open(file2,"rt") as fasta_inMt:
-    for sequence in SeqIO.parse(fasta_inMt, "fasta"):
-Mt_split_codons += str(sequence.seq)
+    for sequence in SeqIO.parse(fasta_inMt, "fasta"):    
 listed_codons_Mt = split_str(Mt_split_codons, 3)
 print("The total number of codons in Mycobacterium tuberculosis is ",len(listed_codons_Mt))
 
@@ -98,9 +99,9 @@ for k in unique_codons_Se:
 
 codon_dictionary_Mt ={}
 for k in unique_codons_Mt:
-    codon_dictionary_Mt[k] = listed_codons_Mt.count(k)	
+    codon_dictionary_Mt[k] = listed_codons_Mt.count(k)
+
 #5. Print out table with three columns: Codon, Frequency in Sp1, Frequency in Sp2
 print("Codon", "\t", "Frequency in Salmonella enterica", "\t", "Frequency in Mycobacterium tuberculosis")
 for k in codon_dictionary_Se:
-        print(k,"\t", codon_dictionary_Se[k], "\t",codon_dictionary_Mt[k] )
-done
+        print(k,"\t", codon_dictionary_Se[k], "\t",codon_dictionary_Mt[k] )    
