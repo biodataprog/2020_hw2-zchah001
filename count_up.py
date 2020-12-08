@@ -63,12 +63,6 @@ with gzip.open(fasta, "rt") as fh:
 
 # Print results
 print('Number of genes: {}'.format(Num_of_Genes))
-print('Total length of the genes: {}'.format(Total_Gene_Length))
-print('Total length of genome: {}'.format(Total_Genome_Length))
-print('percentage of the genome which is coding: {:.2f}%'.format(100 * (Total_Exon_Length/ Total_Genome_Length)))
-
-done
-
-
-
-                  
+print('Total length of the genes is: {}'.format(Total_Gene_Length))
+print('Total length of genome is: {}'.format(Total_Genome_Length))
+print('percentage of the genome which is coding: {:.2f}%'.format(100 * (Total_Exon_Length/Total_Genome_Length)))
