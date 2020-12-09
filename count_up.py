@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-# this is a python script template
-# this next line will download the file using curl
+
+# Download the required files using curl
 
 gff="Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.37.gff3.gz"
 fasta="Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.dna.chromosome.Chromosome.fa.gz"
 
 import os,gzip,itertools,csv,re
 
-# this is code which will parse FASTA files
+# To parse FASTA files
 # define what a header looks like in FASTA format
 def isheader(line):
     return line[0] == '>'
